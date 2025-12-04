@@ -250,7 +250,7 @@
                     { name: '傳說 (血盟獨特)', max: 1, type: 'skill_legend_pledge' },
                     { name: '傳說 (獨特)', max: 1, type: 'skill_legend_unique' },
                     { name: '神話', max: 2, type: 'skill_mythic' },
-                    { name: '神話 (特殊攻擊)', max: 2, type: 'skill_mythic' }
+                    { name: '神話 (特殊攻擊)', max: 2, type: 'skill_mythic_special' }
                 ]
             },
             {
@@ -331,6 +331,7 @@
                                     case 'skill_legend_pledge':
                                         bags += count * 75; break;
                                     case 'skill_mythic': bags += count * 113; break;
+                                    case 'skill_mythic_special': bags += 0; break;
                                     case 'proficiency':
                                         for (let i = 0; i < count; i++) {
                                             if (i < PROFICIENCY_COSTS.length) bags += PROFICIENCY_COSTS[i];
@@ -438,6 +439,7 @@
                                                     if (item.type === 'mall') subtotalCost = currentCount * 4;
                                                     else if (item.type === 'skill_general') subtotalCost = currentCount * 2;
                                                     else if (item.type === 'skill_mythic') subtotalCost = currentCount * 113;
+                                                    else if (item.type === 'skill_mythic_special') subtotalCost = 0;
                                                     else if (item.type.includes('skill_legend_')) subtotalCost = currentCount * 75;
                                                     else if (item.type === 'skill_hero') {
                                                         for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?7:14);
