@@ -147,6 +147,14 @@
                 <path d="m12 5 7 7-7 7" />
             </IconBase>
         );
+        const Package = (props) => (
+            <IconBase {...props}>
+                <path d="m16.5 9.4-9-5.19" />
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <path d="M3.27 6.96 12 12.01l8.73-5.05" />
+                <path d="M12 22.08V12" />
+            </IconBase>
+        );
 
         // --- Data & Logic ---
 
@@ -181,11 +189,14 @@
 
         const DATA_STRUCTURE = [
             {
-                id: 'weapon',
-                name: '武器',
-                icon: <Sword className="w-5 h-5" />,
+                id: 'combined',
+                name: '綜合項目',
+                icon: <Package className="w-5 h-5" />,
+                note: '※ 包含武器、符石與熟練度',
                 items: [
-                    { name: '武器', max: 3, type: 'equipment' }
+                    { name: '武器', max: 3, type: 'equipment' },
+                    { name: '符石', max: 2, type: 'rune', itemNote: '※ 不包含混沌煉金開放的5種新符石' },
+                    { name: '熟練度等級', max: 8, type: 'proficiency', itemNote: '※ 依照等級區分不同費用' }
                 ]
             },
             {
@@ -216,15 +227,6 @@
                 ]
             },
             {
-                id: 'rune',
-                name: '符石',
-                icon: <Calculator className="w-5 h-5" />,
-                note: '※ 不包含混沌煉金開放的5種新符石',
-                items: [
-                    { name: '符石', max: 2, type: 'rune' }
-                ]
-            },
-            {
                 id: 'mall',
                 name: '商城裝備',
                 icon: <ShoppingBag className="w-5 h-5" />,
@@ -251,15 +253,6 @@
                     { name: '傳說 (獨特)', max: 1, type: 'skill_legend_unique' },
                     { name: '神話', max: 2, type: 'skill_mythic' },
                     { name: '神話 (特殊攻擊)', max: 2, type: 'skill_mythic_special' }
-                ]
-            },
-            {
-                id: 'proficiency',
-                name: '熟練度',
-                icon: <BookOpen className="w-5 h-5" />,
-                note: '※ 依照等級區分不同費用',
-                items: [
-                    { name: '熟練度等級', max: 8, type: 'proficiency' }
                 ]
             }
         ];
@@ -470,6 +463,11 @@
                                                             <span className={`font-medium transition-colors ${currentCount > 0 ? 'text-amber-100' : 'text-slate-400'}`}>
                                                                 {item.name}
                                                             </span>
+                                                            {item.itemNote && (
+                                                                <span className="text-[10px] text-amber-500/80 font-medium">
+                                                                    {item.itemNote}
+                                                                </span>
+                                                            )}
                                                             <span className="text-xs text-slate-500">
                                                                 上限: {item.max}
                                                             </span>
