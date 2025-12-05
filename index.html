@@ -38,7 +38,6 @@
         }
     </style>
 </head>
-
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BS3MLPQBVB"></script>
 <script>
@@ -164,6 +163,11 @@
                 <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                 <path d="M3.27 6.96 12 12.01l8.73-5.05" />
                 <path d="M12 22.08V12" />
+            </IconBase>
+        );
+        const Heart = (props) => (
+            <IconBase {...props}>
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
             </IconBase>
         );
 
@@ -404,189 +408,210 @@
 
                         {/* Grid Layout */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {DATA_STRUCTURE.map((category, catIndex) => (
-                                <div 
-                                    key={category.id} 
-                                    className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-lg hover:shadow-2xl hover:border-slate-600 transition-all duration-300 flex flex-col h-full ring-1 ring-slate-900/50"
-                                >
-                                    {/* Category Header */}
-                                    <div className="bg-slate-900/80 px-5 py-4 border-b border-slate-700 flex flex-col gap-1">
-                                        <div className="flex items-center gap-2.5 text-amber-500 font-bold text-lg">
-                                            <span className="text-amber-600">
-                                                {category.icon}
-                                            </span>
-                                            {category.name}
-                                        </div>
-                                        {category.note && (
-                                            <div className="text-xs text-yellow-500/80 mt-1 pl-8 font-medium">
-                                                {category.note}
+                            {DATA_STRUCTURE.map((category, catIndex) => {
+                                // 判斷是否為商城裝備，如果是，則先渲染贊助區塊
+                                const isMall = category.id === 'mall';
+                                
+                                const categoryCard = (
+                                    <div 
+                                        key={category.id} 
+                                        className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-lg hover:shadow-2xl hover:border-slate-600 transition-all duration-300 flex flex-col h-full ring-1 ring-slate-900/50"
+                                    >
+                                        {/* Category Header */}
+                                        <div className="bg-slate-900/80 px-5 py-4 border-b border-slate-700 flex flex-col gap-1">
+                                            <div className="flex items-center gap-2.5 text-amber-500 font-bold text-lg">
+                                                <span className="text-amber-600">
+                                                    {category.icon}
+                                                </span>
+                                                {category.name}
                                             </div>
-                                        )}
-                                    </div>
+                                            {category.note && (
+                                                <div className="text-xs text-yellow-500/80 mt-1 pl-8 font-medium">
+                                                    {category.note}
+                                                </div>
+                                            )}
+                                        </div>
 
-                                    {/* Items List */}
-                                    <div className="p-4 space-y-3 flex-1 bg-slate-800">
-                                        {category.items.map((item, itemIndex) => {
-                                            const key = `${catIndex}-${itemIndex}`;
-                                            const currentCount = counts[key] || 0;
-                                            const isEquipment = item.type === 'equipment';
+                                        {/* Items List */}
+                                        <div className="p-4 space-y-3 flex-1 bg-slate-800">
+                                            {category.items.map((item, itemIndex) => {
+                                                const key = `${catIndex}-${itemIndex}`;
+                                                const currentCount = counts[key] || 0;
+                                                const isEquipment = item.type === 'equipment';
 
-                                            // 計算該項目的小計費用
-                                            let subtotalCost = 0;
-                                            if (currentCount > 0) {
-                                                if (isEquipment) {
-                                                    for(let i=0; i<currentCount; i++) {
-                                                        const rKey = subItemRarities[`${key}-${i}`] || 'hero';
-                                                        subtotalCost += RARITY_COSTS[rKey].cost;
-                                                    }
-                                                } else {
-                                                    if (item.type === 'mall') subtotalCost = currentCount * 4;
-                                                    else if (item.type === 'skill_general') subtotalCost = currentCount * 2;
-                                                    else if (item.type === 'skill_mythic') subtotalCost = currentCount * 113;
-                                                    else if (item.type === 'skill_mythic_special') subtotalCost = 0;
-                                                    else if (item.type.includes('skill_legend_')) subtotalCost = currentCount * 75;
-                                                    else if (item.type === 'skill_hero') {
-                                                        for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?7:14);
-                                                    }
-                                                    else if (item.type === 'skill_legend') {
-                                                        for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?20:40);
-                                                    }
-                                                    else if (item.type === 'proficiency') {
+                                                // 計算該項目的小計費用
+                                                let subtotalCost = 0;
+                                                if (currentCount > 0) {
+                                                    if (isEquipment) {
                                                         for(let i=0; i<currentCount; i++) {
-                                                            if (i < PROFICIENCY_COSTS.length) subtotalCost += PROFICIENCY_COSTS[i];
+                                                            const rKey = subItemRarities[`${key}-${i}`] || 'hero';
+                                                            subtotalCost += RARITY_COSTS[rKey].cost;
+                                                        }
+                                                    } else {
+                                                        if (item.type === 'mall') subtotalCost = currentCount * 4;
+                                                        else if (item.type === 'skill_general') subtotalCost = currentCount * 2;
+                                                        else if (item.type === 'skill_mythic') subtotalCost = currentCount * 113;
+                                                        else if (item.type === 'skill_mythic_special') subtotalCost = 0;
+                                                        else if (item.type.includes('skill_legend_')) subtotalCost = currentCount * 75;
+                                                        else if (item.type === 'skill_hero') {
+                                                            for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?7:14);
+                                                        }
+                                                        else if (item.type === 'skill_legend') {
+                                                            for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?20:40);
+                                                        }
+                                                        else if (item.type === 'proficiency') {
+                                                            for(let i=0; i<currentCount; i++) {
+                                                                if (i < PROFICIENCY_COSTS.length) subtotalCost += PROFICIENCY_COSTS[i];
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
 
-                                            return (
-                                                <div 
-                                                    key={item.name} 
-                                                    className={`relative rounded-lg transition-all duration-300 border ${
-                                                        currentCount > 0 
-                                                            ? 'bg-slate-700/60 border-amber-500/30 ring-1 ring-amber-500/10 shadow-md' 
-                                                            : 'bg-slate-700/20 border-transparent hover:border-slate-600'
-                                                    }`}
-                                                >
-                                                    {/* Top Row: Name and Count Select */}
-                                                    <div className="p-3 flex items-center justify-between">
-                                                        <div className="flex flex-col pl-1">
-                                                            <span className={`font-medium transition-colors ${currentCount > 0 ? 'text-amber-100' : 'text-slate-400'}`}>
-                                                                {item.name}
-                                                            </span>
-                                                            {item.itemNote && (
-                                                                <span className="text-[10px] text-amber-500/80 font-medium">
-                                                                    {item.itemNote}
+                                                return (
+                                                    <div 
+                                                        key={item.name} 
+                                                        className={`relative rounded-lg transition-all duration-300 border ${
+                                                            currentCount > 0 
+                                                                ? 'bg-slate-700/60 border-amber-500/30 ring-1 ring-amber-500/10 shadow-md' 
+                                                                : 'bg-slate-700/20 border-transparent hover:border-slate-600'
+                                                        }`}
+                                                    >
+                                                        {/* Top Row: Name and Count Select */}
+                                                        <div className="p-3 flex items-center justify-between">
+                                                            <div className="flex flex-col pl-1">
+                                                                <span className={`font-medium transition-colors ${currentCount > 0 ? 'text-amber-100' : 'text-slate-400'}`}>
+                                                                    {item.name}
                                                                 </span>
-                                                            )}
-                                                            <span className="text-xs text-slate-500">
-                                                                上限: {item.max}
-                                                            </span>
-                                                        </div>
-                                                        
-                                                        <div className="flex items-center gap-3">
-                                                            {currentCount > 0 && (
-                                                                <div className="flex items-center gap-1.5 text-amber-400 font-bold text-sm bg-slate-900/80 px-2.5 py-1 rounded border border-amber-500/30 shadow-sm">
-                                                                    <Coins size={12} className="text-amber-500" />
-                                                                    <span>{subtotalCost}</span>
-                                                                </div>
-                                                            )}
+                                                                {item.itemNote && (
+                                                                    <span className="text-[10px] text-amber-500/80 font-medium">
+                                                                        {item.itemNote}
+                                                                    </span>
+                                                                )}
+                                                                <span className="text-xs text-slate-500">
+                                                                    上限: {item.max}
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <div className="flex items-center gap-3">
+                                                                {currentCount > 0 && (
+                                                                    <div className="flex items-center gap-1.5 text-amber-400 font-bold text-sm bg-slate-900/80 px-2.5 py-1 rounded border border-amber-500/30 shadow-sm">
+                                                                        <Coins size={12} className="text-amber-500" />
+                                                                        <span>{subtotalCost}</span>
+                                                                    </div>
+                                                                )}
 
-                                                            <div className="relative group">
-                                                                <select
-                                                                    value={currentCount}
-                                                                    onChange={(e) => handleCountChange(catIndex, itemIndex, e.target.value)}
-                                                                    className={`
-                                                                        appearance-none w-16 py-1.5 pl-3 pr-7 rounded-md font-bold text-center outline-none focus:ring-2 transition-all text-sm border cursor-pointer
-                                                                        ${currentCount > 0 
-                                                                            ? 'bg-amber-600 text-white border-amber-600 focus:ring-amber-500 shadow-md shadow-amber-900/30' 
-                                                                            : 'bg-slate-900 text-slate-400 border-slate-600 hover:border-slate-500 focus:ring-slate-500'}
-                                                                    `}
-                                                                >
-                                                                    {renderOptions(item.max)}
-                                                                </select>
-                                                                <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 transition-colors ${currentCount > 0 ? 'text-white' : 'text-slate-500'}`}>
-                                                                    <ChevronDown size={14} strokeWidth={3} />
+                                                                <div className="relative group">
+                                                                    <select
+                                                                        value={currentCount}
+                                                                        onChange={(e) => handleCountChange(catIndex, itemIndex, e.target.value)}
+                                                                        className={`
+                                                                            appearance-none w-16 py-1.5 pl-3 pr-7 rounded-md font-bold text-center outline-none focus:ring-2 transition-all text-sm border cursor-pointer
+                                                                            ${currentCount > 0 
+                                                                                ? 'bg-amber-600 text-white border-amber-600 focus:ring-amber-500 shadow-md shadow-amber-900/30' 
+                                                                                : 'bg-slate-900 text-slate-400 border-slate-600 hover:border-slate-500 focus:ring-slate-500'}
+                                                                        `}
+                                                                    >
+                                                                        {renderOptions(item.max)}
+                                                                    </select>
+                                                                    <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 transition-colors ${currentCount > 0 ? 'text-white' : 'text-slate-500'}`}>
+                                                                        <ChevronDown size={14} strokeWidth={3} />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    {/* Equipment Details Panel */}
-                                                    {currentCount > 0 && isEquipment && (
-                                                        <div className="px-3 py-3 bg-slate-900/40 border-t border-slate-600/30 space-y-2.5 rounded-b-lg animate-in slide-in-from-top-2 fade-in duration-300">
-                                                            {Array.from({ length: currentCount }).map((_, subIndex) => {
-                                                                const subKey = `${key}-${subIndex}`;
-                                                                const currentRarityKey = subItemRarities[subKey] || 'hero';
-                                                                const rarityInfo = RARITY_COSTS[currentRarityKey];
+                                                        {/* Equipment Details Panel */}
+                                                        {currentCount > 0 && isEquipment && (
+                                                            <div className="px-3 py-3 bg-slate-900/40 border-t border-slate-600/30 space-y-2.5 rounded-b-lg animate-in slide-in-from-top-2 fade-in duration-300">
+                                                                {Array.from({ length: currentCount }).map((_, subIndex) => {
+                                                                    const subKey = `${key}-${subIndex}`;
+                                                                    const currentRarityKey = subItemRarities[subKey] || 'hero';
+                                                                    const rarityInfo = RARITY_COSTS[currentRarityKey];
 
-                                                                return (
-                                                                    <div key={subIndex} className="flex items-center justify-between gap-2 text-sm bg-slate-800/50 p-1.5 rounded border border-slate-700/50">
-                                                                        <div className="flex items-center gap-2 text-slate-400 pl-1">
-                                                                            <div className={`w-2 h-2 rounded-full ${rarityInfo.dotClass}`}></div>
-                                                                            <span className="font-medium text-xs">第 {subIndex + 1} 個</span>
-                                                                        </div>
-                                                                        
-                                                                        <div className="flex items-center gap-2">
-                                                                            <div className="relative">
-                                                                                <select
-                                                                                    value={currentRarityKey}
-                                                                                    onChange={(e) => handleSubItemRarityChange(catIndex, itemIndex, subIndex, e.target.value)}
-                                                                                    className={`
-                                                                                        appearance-none text-xs py-1 pl-2 pr-6 rounded cursor-pointer outline-none border transition-all font-bold shadow-sm
-                                                                                        ${rarityInfo.badgeClass}
-                                                                                        focus:ring-1 focus:ring-offset-1 focus:ring-slate-500 focus:ring-offset-slate-800
-                                                                                    `}
-                                                                                >
-                                                                                    {Object.entries(RARITY_COSTS).map(([rKey, val]) => (
-                                                                                        <option key={rKey} value={rKey} className="bg-slate-800 text-slate-200">
-                                                                                            {val.name}
-                                                                                        </option>
-                                                                                    ))}
-                                                                                </select>
-                                                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-current opacity-60">
-                                                                                    <ChevronDown size={10} />
+                                                                    return (
+                                                                        <div key={subIndex} className="flex items-center justify-between gap-2 text-sm bg-slate-800/50 p-1.5 rounded border border-slate-700/50">
+                                                                            <div className="flex items-center gap-2 text-slate-400 pl-1">
+                                                                                <div className={`w-2 h-2 rounded-full ${rarityInfo.dotClass}`}></div>
+                                                                                <span className="font-medium text-xs">第 {subIndex + 1} 個</span>
+                                                                            </div>
+                                                                            
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div className="relative">
+                                                                                    <select
+                                                                                        value={currentRarityKey}
+                                                                                        onChange={(e) => handleSubItemRarityChange(catIndex, itemIndex, subIndex, e.target.value)}
+                                                                                        className={`
+                                                                                            appearance-none text-xs py-1 pl-2 pr-6 rounded cursor-pointer outline-none border transition-all font-bold shadow-sm
+                                                                                            ${rarityInfo.badgeClass}
+                                                                                            focus:ring-1 focus:ring-offset-1 focus:ring-slate-500 focus:ring-offset-slate-800
+                                                                                        `}
+                                                                                    >
+                                                                                        {Object.entries(RARITY_COSTS).map(([rKey, val]) => (
+                                                                                            <option key={rKey} value={rKey} className="bg-slate-800 text-slate-200">
+                                                                                                {val.name}
+                                                                                            </option>
+                                                                                        ))}
+                                                                                    </select>
+                                                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-current opacity-60">
+                                                                                        <ChevronDown size={10} />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="w-8 text-right font-mono text-slate-500 text-xs font-bold">
+                                                                                    {rarityInfo.cost}
                                                                                 </div>
                                                                             </div>
-                                                                            <div className="w-8 text-right font-mono text-slate-500 text-xs font-bold">
-                                                                                {rarityInfo.cost}
-                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    )}
-                                                    
-                                                    {/* Non-Equipment Info (Optional) */}
-                                                    {currentCount > 0 && !isEquipment && (
-                                                        <div className="px-3 py-1.5 bg-slate-900/20 border-t border-slate-600/20 flex justify-end rounded-b-lg">
-                                                            <span className="text-[10px] text-slate-500 font-medium tracking-wide">
-                                                                {item.type === 'proficiency' 
-                                                                    ? `等級 ${currentCount} (累計)` 
-                                                                    : item.type.includes('skill') 
-                                                                        ? '依階梯計價' 
-                                                                        : '固定單價'}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        )}
+                                                        
+                                                        {/* Non-Equipment Info (Optional) */}
+                                                        {currentCount > 0 && !isEquipment && (
+                                                            <div className="px-3 py-1.5 bg-slate-900/20 border-t border-slate-600/20 flex justify-end rounded-b-lg">
+                                                                <span className="text-[10px] text-slate-500 font-medium tracking-wide">
+                                                                    {item.type === 'proficiency' 
+                                                                        ? `等級 ${currentCount} (累計)` 
+                                                                        : item.type.includes('skill') 
+                                                                            ? '依階梯計價' 
+                                                                            : '固定單價'}
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+
+                                if (isMall) {
+                                    return (
+                                        <React.Fragment key={category.id}>
+                                            {/* Sponsorship Banner */}
+                                            <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-800/30 rounded-xl border border-dashed border-slate-600 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-center hover:bg-slate-800/50 transition-colors group">
+                                                 <div className="flex items-center gap-2">
+                                                    <div className="p-2 bg-slate-900 rounded-full text-slate-500 group-hover:text-amber-500 transition-colors">
+                                                        <Heart size={20} className="group-hover:fill-amber-500/20 transition-all" />
+                                                    </div>
+                                                    <span className="text-slate-300 font-medium">贊助區</span>
+                                                    <span className="hidden sm:inline text-slate-600">|</span>
+                                                 </div>
+                                                 <a href="mailto:lineagem.info@gmail.com" className="text-amber-500 hover:text-amber-400 font-bold hover:underline">
+                                                    有廣告需求請洽 lineagem.info@gmail.com
+                                                 </a>
+                                            </div>
+                                            {categoryCard}
+                                        </React.Fragment>
+                                    );
+                                }
+
+                                return categoryCard;
+                            })}
                         </div>
 
                         {/* External Links & Credit Footer */}
                         <footer className="mt-12 mb-8 flex flex-col items-center gap-6">
-
-                            {/* Sponsorship Area (Moved Here) */}
-                            <div className="w-full max-w-2xl px-4">
-                                <div className="border-2 border-dashed border-slate-700 rounded-lg p-4 text-center text-slate-400 text-sm hover:border-slate-500 hover:text-slate-300 transition-colors">
-                                    贊助區｜請洽 <a href="mailto:lineagem.info@gmail.com" className="text-amber-500 hover:text-amber-400 hover:underline">lineagem.info@gmail.com</a>
-                                </div>
-                            </div>
                             
                             {/* Resource Links */}
                             <div className="flex flex-wrap justify-center gap-3 w-full px-4">
@@ -670,4 +695,3 @@
     </script>
 </body>
 </html>
-
