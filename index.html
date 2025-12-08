@@ -47,12 +47,12 @@
   gtag('js', new Date());
 
   gtag('config', 'G-BS3MLPQBVB');
-</script>
+</script>    
 <body class="bg-slate-900 text-slate-100">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useMemo } = React;
+        const { useState, useMemo, useEffect } = React;
 
         // --- Icons Components (內嵌 SVG 以確保單檔執行無虞) ---
         const IconBase = ({ size = 24, className = "", children, ...props }) => (
@@ -170,6 +170,17 @@
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
             </IconBase>
         );
+        const Youtube = (props) => (
+            <IconBase {...props}>
+                <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+                <path d="m10 15 5-3-5-3z" />
+            </IconBase>
+        );
+        const Play = (props) => (
+            <IconBase {...props}>
+                <polygon points="5 3 19 12 5 21 5 3" />
+            </IconBase>
+        );
 
         // --- Data & Logic ---
 
@@ -272,9 +283,44 @@
             }
         ];
 
+        // 轉職影片連結 - 視覺升級版 (更新文案與手機防跑版設定)
+        const VIDEO_LINKS = [
+            { id: 'dk', title: '暗黑騎士', subtitle:'活動王者龍頭寶座', url: 'https://www.youtube.com/watch?v=JIauw6VhzUM', 
+              bg: 'from-red-900/80 to-slate-900', border: 'border-red-500/50', iconColor: 'text-red-500', hover: 'hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]' },
+            
+            { id: 'thunder', title: '雷神', subtitle:'練功/單挑地龍輕鬆制勝', url: 'https://www.youtube.com/watch?v=QS_LTXKQ-Ic', 
+              bg: 'from-blue-900/80 to-slate-900', border: 'border-blue-500/50', iconColor: 'text-blue-400', hover: 'hover:shadow-[0_0_20px_rgba(96,165,250,0.3)]' },
+            
+            { id: 'berserker', title: '狂戰士', subtitle:'狂暴PVP首選職業', url: 'https://www.youtube.com/watch?v=etfB7Lpp9KM', 
+              bg: 'from-orange-900/80 to-slate-900', border: 'border-orange-500/50', iconColor: 'text-orange-500', hover: 'hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]' },
+            
+            { id: 'gunner', title: '槍手', subtitle:'遠程一哥控場專家', url: 'https://www.youtube.com/watch?v=4QFuUfdjCWE', 
+              bg: 'from-emerald-900/80 to-slate-900', border: 'border-emerald-500/50', iconColor: 'text-emerald-400', hover: 'hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]' }
+        ];
+
         function ClassChangeCalculator() {
             const [counts, setCounts] = useState({});
             const [subItemRarities, setSubItemRarities] = useState({});
+            
+            // 控制頂部影片推薦欄顯示
+            const [showVideoBanner, setShowVideoBanner] = useState(false);
+
+            // 監聽滾動事件
+            useEffect(() => {
+                const handleScroll = () => {
+                    const scrollPosition = window.innerHeight + window.scrollY;
+                    const pageHeight = document.documentElement.scrollHeight;
+                    // 當距離底部小於 300px 時顯示，增加觸發範圍
+                    if (pageHeight - scrollPosition < 300) {
+                        setShowVideoBanner(true);
+                    } else {
+                        setShowVideoBanner(false);
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
 
             const handleCountChange = (catIndex, itemIndex, value) => {
                 const newCount = parseInt(value, 10);
@@ -366,6 +412,48 @@
 
             return (
                 <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-36">
+                    {/* Giant Video Banner (Scroll Triggered) */}
+                    <div className={`fixed top-0 left-0 right-0 z-50 bg-slate-900/95 border-b-2 border-amber-600/50 backdrop-blur-xl shadow-2xl transform transition-transform duration-500 ease-in-out h-[35vh] min-h-[280px] flex flex-col justify-center ${showVideoBanner ? 'translate-y-0' : '-translate-y-full'}`}>
+                        <div className="w-full max-w-7xl mx-auto px-4 py-6 h-full flex flex-col">
+                            <div className="flex items-center gap-3 mb-4 shrink-0">
+                                <div className="bg-red-600 p-2 rounded-lg shadow-lg shadow-red-900/50">
+                                    <Youtube size={28} className="text-white" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl sm:text-2xl font-black text-white tracking-wide">精選轉職攻略</h2>
+                                    <p className="text-slate-400 text-xs sm:text-sm">點擊卡片觀看 YouTube 詳細解說</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 h-full min-h-0">
+                                {VIDEO_LINKS.map(link => (
+                                    <a 
+                                        key={link.id}
+                                        href={link.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className={`relative group rounded-xl border-2 ${link.border} bg-gradient-to-br ${link.bg} p-2 sm:p-4 flex flex-col justify-end gap-1 sm:gap-3 transition-all duration-300 transform hover:-translate-y-1 ${link.hover} overflow-hidden text-left`}
+                                    >
+                                        {/* 圖示移至背景右下角 */}
+                                        <div className={`absolute -bottom-2 -right-2 p-2 opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none ${link.iconColor}`}>
+                                            <Play size={56} fill="currentColor" />
+                                        </div>
+                                        
+                                        {/* 文字區塊 */}
+                                        <div className="relative z-10 w-full">
+                                            <h3 className="text-base sm:text-xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors leading-tight">{link.title}</h3>
+                                            <div className="w-full">
+                                                <span className="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-900/60 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded inline-block max-w-full break-words whitespace-normal leading-tight">
+                                                    {link.subtitle}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Header */}
                     <header className="bg-slate-800 border-b border-amber-600/30 sticky top-0 z-20 shadow-lg">
                         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
