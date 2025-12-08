@@ -37,13 +37,8 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
     </style>
-<!-- Google ads  -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6874844918477077"
-     crossorigin="anonymous"></script>
-
 </head>
 
-    
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BS3MLPQBVB"></script>
 <script>
@@ -53,7 +48,6 @@
 
   gtag('config', 'G-BS3MLPQBVB');
 </script>
-
 <body class="bg-slate-900 text-slate-100">
     <div id="root"></div>
 
@@ -604,7 +598,7 @@
                                                     <span className="hidden sm:inline text-slate-600">|</span>
                                                  </div>
                                                  <a href="mailto:lineagem.info@gmail.com" className="text-amber-500 hover:text-amber-400 font-bold hover:underline">
-                                                    有廣告需求點此聯繫 lineagem.info@gmail.com
+                                                    有廣告需求請洽 lineagem.info@gmail.com
                                                  </a>
                                             </div>
                                             {categoryCard}
@@ -619,6 +613,20 @@
                         {/* External Links & Credit Footer */}
                         <footer className="mt-12 mb-8 flex flex-col items-center gap-6">
                             
+                            {/* Credits (Moved Up) */}
+                            <div className="text-center text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-center gap-2">
+                                <span className="font-medium">設計/製作：編董不雷 BandonPlay</span>
+                                <span className="hidden sm:inline text-slate-600">|</span>
+                                <a 
+                                    href="https://www.youtube.com/@bandonplay/featured" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-amber-500 hover:text-amber-400 flex items-center gap-1 hover:underline transition-colors font-medium bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50 hover:border-amber-500/30"
+                                >
+                                    YouTube 頻道 <ExternalLink size={12} />
+                                </a>
+                            </div>
+
                             {/* Resource Links */}
                             <div className="flex flex-wrap justify-center gap-3 w-full px-4">
                                 <a 
@@ -652,20 +660,6 @@
                                     className="flex items-center gap-2 px-4 py-2 bg-amber-900/30 hover:bg-amber-900/50 text-amber-500 hover:text-amber-400 rounded-lg border border-amber-900/50 hover:border-amber-700 transition-all text-sm font-medium shadow-sm"
                                 >
                                     贊助編董 <ExternalLink size={14} />
-                                </a>
-                            </div>
-
-                            {/* Credits */}
-                            <div className="text-center text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-center gap-2">
-                                <span className="font-medium">設計/製作：編董不雷 BandonPlay</span>
-                                <span className="hidden sm:inline text-slate-600">|</span>
-                                <a 
-                                    href="https://www.youtube.com/@bandonplay/featured" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-amber-500 hover:text-amber-400 flex items-center gap-1 hover:underline transition-colors font-medium bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50 hover:border-amber-500/30"
-                                >
-                                    YouTube 頻道 <ExternalLink size={12} />
                                 </a>
                             </div>
                         </footer>
@@ -709,5 +703,3 @@
     </script>
 </body>
 </html>
-
-
