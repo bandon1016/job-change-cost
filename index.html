@@ -38,7 +38,6 @@
         }
     </style>
 </head>
-
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BS3MLPQBVB"></script>
 <script>
@@ -47,7 +46,9 @@
   gtag('js', new Date());
 
   gtag('config', 'G-BS3MLPQBVB');
-</script>    
+</script>
+
+
 <body class="bg-slate-900 text-slate-100">
     <div id="root"></div>
 
@@ -283,7 +284,7 @@
             }
         ];
 
-        // 轉職影片連結 - 視覺升級版 (更新文案與手機防跑版設定)
+        // 轉職影片連結 - 視覺升級版
         const VIDEO_LINKS = [
             { id: 'dk', title: '暗黑騎士', subtitle:'活動王者龍頭寶座', url: 'https://www.youtube.com/watch?v=JIauw6VhzUM', 
               bg: 'from-red-900/80 to-slate-900', border: 'border-red-500/50', iconColor: 'text-red-500', hover: 'hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]' },
@@ -329,13 +330,14 @@
                 setCounts(prev => ({ ...prev, [itemKey]: newCount }));
 
                 const itemType = DATA_STRUCTURE[catIndex].items[itemIndex].type;
-                if (itemType === 'equipment') {
+                if (itemType === 'equipment' || itemType === 'rune') {
                     setSubItemRarities(prev => {
                         const next = { ...prev };
                         for (let i = 0; i < newCount; i++) {
                             const subKey = `${itemKey}-${i}`;
                             if (!next[subKey]) {
-                                next[subKey] = 'hero';
+                                // 符石預設為 rare，其他裝備預設為 hero
+                                next[subKey] = itemType === 'rune' ? 'rare' : 'hero';
                             }
                         }
                         return next;
@@ -365,10 +367,12 @@
                         if (count > 0) {
                             items += count;
                             
-                            if (item.type === 'equipment') {
+                            if (item.type === 'equipment' || item.type === 'rune') {
                                 for (let i = 0; i < count; i++) {
                                     const subKey = `${key}-${i}`;
-                                    const rarityKey = subItemRarities[subKey] || 'hero';
+                                    // 符石預設 rare，其他預設 hero
+                                    const defaultRarity = item.type === 'rune' ? 'rare' : 'hero';
+                                    const rarityKey = subItemRarities[subKey] || defaultRarity;
                                     bags += RARITY_COSTS[rarityKey].cost;
                                 }
                             } else {
@@ -391,7 +395,7 @@
                                             if (i < PROFICIENCY_COSTS.length) bags += PROFICIENCY_COSTS[i];
                                         }
                                         break;
-                                    case 'rune': bags += 0; break;
+                                    // rune 已經移到上面處理
                                     default: break;
                                 }
                             }
@@ -432,21 +436,17 @@
                                         href={link.url} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        className={`relative group rounded-xl border-2 ${link.border} bg-gradient-to-br ${link.bg} p-2 sm:p-4 flex flex-col justify-end gap-1 sm:gap-3 transition-all duration-300 transform hover:-translate-y-1 ${link.hover} overflow-hidden text-left`}
+                                        className={`relative group rounded-xl border-2 ${link.border} bg-gradient-to-br ${link.bg} p-2 sm:p-4 flex flex-col justify-end gap-1 sm:gap-3 transition-all duration-300 transform hover:-translate-y-1 ${link.hover} overflow-hidden text-center sm:text-left`}
                                     >
-                                        {/* 圖示移至背景右下角 */}
-                                        <div className={`absolute -bottom-2 -right-2 p-2 opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none ${link.iconColor}`}>
-                                            <Play size={56} fill="currentColor" />
+                                        <div className={`absolute bottom-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none ${link.iconColor}`}>
+                                            <Play size={64} fill="currentColor" />
                                         </div>
                                         
-                                        {/* 文字區塊 */}
-                                        <div className="relative z-10 w-full">
-                                            <h3 className="text-base sm:text-xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors leading-tight">{link.title}</h3>
-                                            <div className="w-full">
-                                                <span className="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-900/60 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded inline-block max-w-full break-words whitespace-normal leading-tight">
-                                                    {link.subtitle}
-                                                </span>
-                                            </div>
+                                        <div className="relative z-10">
+                                            <h3 className="text-base sm:text-xl font-bold text-white mb-0.5 sm:mb-1 group-hover:text-amber-400 transition-colors leading-tight">{link.title}</h3>
+                                            <span className="text-[10px] sm:text-xs font-medium text-slate-300 bg-slate-900/60 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded inline-block max-w-full break-words leading-tight">
+                                                {link.subtitle}
+                                            </span>
                                         </div>
                                     </a>
                                 ))}
@@ -497,7 +497,6 @@
                         {/* Grid Layout */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {DATA_STRUCTURE.map((category, catIndex) => {
-                                // 判斷是否為商城裝備，如果是，則先渲染贊助區塊
                                 const isMall = category.id === 'mall';
                                 
                                 const categoryCard = (
@@ -505,7 +504,6 @@
                                         key={category.id} 
                                         className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 shadow-lg hover:shadow-2xl hover:border-slate-600 transition-all duration-300 flex flex-col h-full ring-1 ring-slate-900/50"
                                     >
-                                        {/* Category Header */}
                                         <div className="bg-slate-900/80 px-5 py-4 border-b border-slate-700 flex flex-col gap-1">
                                             <div className="flex items-center gap-2.5 text-amber-500 font-bold text-lg">
                                                 <span className="text-amber-600">
@@ -520,19 +518,19 @@
                                             )}
                                         </div>
 
-                                        {/* Items List */}
                                         <div className="p-4 space-y-3 flex-1 bg-slate-800">
                                             {category.items.map((item, itemIndex) => {
                                                 const key = `${catIndex}-${itemIndex}`;
                                                 const currentCount = counts[key] || 0;
-                                                const isEquipment = item.type === 'equipment';
-
-                                                // 計算該項目的小計費用
+                                                const isEquipment = item.type === 'equipment' || item.type === 'rune';
+                                                
                                                 let subtotalCost = 0;
                                                 if (currentCount > 0) {
                                                     if (isEquipment) {
                                                         for(let i=0; i<currentCount; i++) {
-                                                            const rKey = subItemRarities[`${key}-${i}`] || 'hero';
+                                                            const subKey = `${key}-${i}`;
+                                                            const defaultRarity = item.type === 'rune' ? 'rare' : 'hero';
+                                                            const rKey = subItemRarities[subKey] || defaultRarity;
                                                             subtotalCost += RARITY_COSTS[rKey].cost;
                                                         }
                                                     } else {
@@ -564,7 +562,6 @@
                                                                 : 'bg-slate-700/20 border-transparent hover:border-slate-600'
                                                         }`}
                                                     >
-                                                        {/* Top Row: Name and Count Select */}
                                                         <div className="p-3 flex items-center justify-between">
                                                             <div className="flex flex-col pl-1">
                                                                 <span className={`font-medium transition-colors ${currentCount > 0 ? 'text-amber-100' : 'text-slate-400'}`}>
@@ -608,12 +605,12 @@
                                                             </div>
                                                         </div>
 
-                                                        {/* Equipment Details Panel */}
                                                         {currentCount > 0 && isEquipment && (
                                                             <div className="px-3 py-3 bg-slate-900/40 border-t border-slate-600/30 space-y-2.5 rounded-b-lg animate-in slide-in-from-top-2 fade-in duration-300">
                                                                 {Array.from({ length: currentCount }).map((_, subIndex) => {
                                                                     const subKey = `${key}-${subIndex}`;
-                                                                    const currentRarityKey = subItemRarities[subKey] || 'hero';
+                                                                    const defaultRarity = item.type === 'rune' ? 'rare' : 'hero';
+                                                                    const currentRarityKey = subItemRarities[subKey] || defaultRarity;
                                                                     const rarityInfo = RARITY_COSTS[currentRarityKey];
 
                                                                     return (
@@ -634,11 +631,15 @@
                                                                                             focus:ring-1 focus:ring-offset-1 focus:ring-slate-500 focus:ring-offset-slate-800
                                                                                         `}
                                                                                     >
-                                                                                        {Object.entries(RARITY_COSTS).map(([rKey, val]) => (
-                                                                                            <option key={rKey} value={rKey} className="bg-slate-800 text-slate-200">
-                                                                                                {val.name}
-                                                                                            </option>
-                                                                                        ))}
+                                                                                        {Object.entries(RARITY_COSTS).map(([rKey, val]) => {
+                                                                                            // 若是符石，只顯示 rare
+                                                                                            if (item.type === 'rune' && rKey !== 'rare') return null;
+                                                                                            return (
+                                                                                                <option key={rKey} value={rKey} className="bg-slate-800 text-slate-200">
+                                                                                                    {val.name}
+                                                                                                </option>
+                                                                                            );
+                                                                                        })}
                                                                                     </select>
                                                                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-current opacity-60">
                                                                                         <ChevronDown size={10} />
@@ -654,7 +655,6 @@
                                                             </div>
                                                         )}
                                                         
-                                                        {/* Non-Equipment Info (Optional) */}
                                                         {currentCount > 0 && !isEquipment && (
                                                             <div className="px-3 py-1.5 bg-slate-900/20 border-t border-slate-600/20 flex justify-end rounded-b-lg">
                                                                 <span className="text-[10px] text-slate-500 font-medium tracking-wide">
@@ -676,7 +676,6 @@
                                 if (isMall) {
                                     return (
                                         <React.Fragment key={category.id}>
-                                            {/* Sponsorship Banner */}
                                             <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-800/30 rounded-xl border border-dashed border-slate-600 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-center hover:bg-slate-800/50 transition-colors group">
                                                  <div className="flex items-center gap-2">
                                                     <div className="p-2 bg-slate-900 rounded-full text-slate-500 group-hover:text-amber-500 transition-colors">
@@ -698,10 +697,7 @@
                             })}
                         </div>
 
-                        {/* External Links & Credit Footer */}
                         <footer className="mt-12 mb-8 flex flex-col items-center gap-6">
-                            
-                            {/* Credits (Moved Up) */}
                             <div className="text-center text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-center gap-2">
                                 <span className="font-medium">設計/製作：編董不雷 BandonPlay</span>
                                 <span className="hidden sm:inline text-slate-600">|</span>
@@ -715,7 +711,6 @@
                                 </a>
                             </div>
 
-                            {/* Resource Links */}
                             <div className="flex flex-wrap justify-center gap-3 w-full px-4">
                                 <a 
                                     href="https://www.lineagem.com.tw/" 
@@ -741,19 +736,10 @@
                                 >
                                     購買天堂M鑽卡找編董 <ExternalLink size={14} />
                                 </a>
-                                <a 
-                                    href="https://payment.opay.tw/Broadcaster/Donate/3D3C86137B04E178D874F19B29B3ED51" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-4 py-2 bg-amber-900/30 hover:bg-amber-900/50 text-amber-500 hover:text-amber-400 rounded-lg border border-amber-900/50 hover:border-amber-700 transition-all text-sm font-medium shadow-sm"
-                                >
-                                    贊助編董 <ExternalLink size={14} />
-                                </a>
                             </div>
                         </footer>
                     </main>
 
-                    {/* Fixed Bottom Summary */}
                     <div className="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-amber-600 backdrop-blur-md p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.5)] z-30 safe-area-bottom">
                         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="flex flex-col">
