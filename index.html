@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>轉職需求袋子計算機</title>
     
-    <!-- Google AdSense Script (依照需求加入) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6874844918477077"
-     crossorigin="anonymous"></script>
-    
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -291,29 +287,6 @@
             { id: 'gunner', title: '槍手', subtitle:'遠程一哥控場專家', url: 'https://www.youtube.com/watch?v=4QFuUfdjCWE', 
               bg: 'from-emerald-900/80 to-slate-900', border: 'border-emerald-500/50', iconColor: 'text-emerald-400', hover: 'hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]' }
         ];
-
-        // Google Ad Component
-        const GoogleAdBanner = () => {
-            useEffect(() => {
-                try {
-                    (window.adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error("AdSense push error:", e);
-                }
-            }, []);
-
-            return (
-                <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-800/30 rounded-xl border border-dashed border-slate-600 p-2 flex justify-center items-center overflow-hidden">
-                    <div className="overflow-x-auto w-full flex justify-center">
-                        {/* 轉職袋子計算機 */}
-                        <ins className="adsbygoogle"
-                             style={{ display: 'inline-block', width: '728px', height: '90px' }}
-                             data-ad-client="ca-pub-6874844918477077"
-                             data-ad-slot="5039873914"></ins>
-                    </div>
-                </div>
-            );
-        };
 
         function ClassChangeCalculator() {
             const [counts, setCounts] = useState({});
@@ -692,7 +665,18 @@
                                 if (isMall) {
                                     return (
                                         <React.Fragment key={category.id}>
-                                            <GoogleAdBanner />
+                                            <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-800/30 rounded-xl border border-dashed border-slate-600 p-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-center hover:bg-slate-800/50 transition-colors group">
+                                                 <div className="flex items-center gap-2">
+                                                    <div className="p-2 bg-slate-900 rounded-full text-slate-500 group-hover:text-amber-500 transition-colors">
+                                                        <Heart size={20} className="group-hover:fill-amber-500/20 transition-all" />
+                                                    </div>
+                                                    <span className="text-slate-300 font-medium">贊助區</span>
+                                                    <span className="hidden sm:inline text-slate-600">|</span>
+                                                 </div>
+                                                 <a href="mailto:lineagem.info@gmail.com" className="text-amber-500 hover:text-amber-400 font-bold hover:underline">
+                                                    有廣告需求請洽 lineagem.info@gmail.com
+                                                 </a>
+                                            </div>
                                             {categoryCard}
                                         </React.Fragment>
                                     );
