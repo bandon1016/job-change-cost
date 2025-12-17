@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
+        /* 自定義滾動條樣式，讓暗色主題更一致 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -38,7 +39,6 @@
     </style>
 </head>
 
-
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BS3MLPQBVB"></script>
 <script>
@@ -55,6 +55,7 @@
     <script type="text/babel">
         const { useState, useMemo, useEffect } = React;
 
+        // --- Icons Components (內嵌 SVG 以確保單檔執行無虞) ---
         const IconBase = ({ size = 24, className = "", children, ...props }) => (
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -283,6 +284,7 @@
             }
         ];
 
+        // 轉職影片連結 - 視覺升級版 (已更新文案與防跑版設定)
         const VIDEO_LINKS = [
             { id: 'dk', title: '暗黑騎士', subtitle:'活動王者龍頭寶座', url: 'https://www.youtube.com/watch?v=JIauw6VhzUM', 
               bg: 'from-red-900/80 to-slate-900', border: 'border-red-500/50', iconColor: 'text-red-500', hover: 'hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]' },
@@ -301,12 +303,15 @@
             const [counts, setCounts] = useState({});
             const [subItemRarities, setSubItemRarities] = useState({});
             
+            // 控制頂部影片推薦欄顯示
             const [showVideoBanner, setShowVideoBanner] = useState(false);
 
+            // 監聽滾動事件
             useEffect(() => {
                 const handleScroll = () => {
                     const scrollPosition = window.innerHeight + window.scrollY;
                     const pageHeight = document.documentElement.scrollHeight;
+                    // 當距離底部小於 300px 時顯示，增加觸發範圍
                     if (pageHeight - scrollPosition < 300) {
                         setShowVideoBanner(true);
                     } else {
@@ -331,6 +336,7 @@
                         for (let i = 0; i < newCount; i++) {
                             const subKey = `${itemKey}-${i}`;
                             if (!next[subKey]) {
+                                // 符石預設為 rare，其他裝備預設為 hero
                                 next[subKey] = itemType === 'rune' ? 'rare' : 'hero';
                             }
                         }
@@ -380,8 +386,9 @@
                                         for (let i = 1; i <= count; i++) bags += (i <= 4 ? 20 : 40);
                                         break;
                                     case 'skill_legend_unique':
-                                    case 'skill_legend_pledge':
                                         bags += count * 75; break;
+                                    case 'skill_legend_pledge':
+                                        bags += count * 60; break;
                                     case 'skill_mythic': bags += count * 113; break;
                                     case 'skill_mythic_special': bags += 0; break;
                                     case 'proficiency':
@@ -389,6 +396,7 @@
                                             if (i < PROFICIENCY_COSTS.length) bags += PROFICIENCY_COSTS[i];
                                         }
                                         break;
+                                    // rune 已經移到上面處理
                                     default: break;
                                 }
                             }
@@ -531,7 +539,8 @@
                                                         else if (item.type === 'skill_general') subtotalCost = currentCount * 2;
                                                         else if (item.type === 'skill_mythic') subtotalCost = currentCount * 113;
                                                         else if (item.type === 'skill_mythic_special') subtotalCost = 0;
-                                                        else if (item.type.includes('skill_legend_')) subtotalCost = currentCount * 75;
+                                                        else if (item.type === 'skill_legend_unique') subtotalCost = currentCount * 75;
+                                                        else if (item.type === 'skill_legend_pledge') subtotalCost = currentCount * 60;
                                                         else if (item.type === 'skill_hero') {
                                                             for(let i=1; i<=currentCount; i++) subtotalCost += (i<=4?7:14);
                                                         }
@@ -625,6 +634,7 @@
                                                                                         `}
                                                                                     >
                                                                                         {Object.entries(RARITY_COSTS).map(([rKey, val]) => {
+                                                                                            // 若是符石，只顯示 rare
                                                                                             if (item.type === 'rune' && rKey !== 'rare') return null;
                                                                                             return (
                                                                                                 <option key={rKey} value={rKey} className="bg-slate-800 text-slate-200">
@@ -777,5 +787,3 @@
     </script>
 </body>
 </html>
-
-
