@@ -184,10 +184,10 @@
                 id: "combined",
                 name: "核心項目",
                 icon: <Package className="w-5 h-5" />,
-                note: "依裝備、符文與熟練度分別計算",
+                note: "依裝備、符石與熟練度分別計算",
                 items: [
                     { name: "裝備", max: 3, type: "equipment" },
-                    { name: "符文", max: 2, type: "rune", itemNote: "符文固定以稀有成本計算" },
+                    { name: "符石", max: 2, type: "rune", itemNote: "符石固定以稀有成本計算" },
                     { name: "熟練度階段", max: 8, type: "proficiency", itemNote: "依階段累加轉職幣" }
                 ]
             },
@@ -224,13 +224,13 @@
                 icon: <ShoppingBag className="w-5 h-5" />,
                 note: "每件以 4 個轉職幣估算",
                 items: [
-                    { name: "稀有變身卡", max: 2, type: "mall" },
-                    { name: "稀有娃娃卡", max: 2, type: "mall" },
-                    { name: "英雄變身卡", max: 1, type: "mall" },
-                    { name: "英雄娃娃卡", max: 1, type: "mall" },
-                    { name: "聖物卡", max: 1, type: "mall" },
-                    { name: "英雄聖物卡", max: 1, type: "mall" },
-                    { name: "其他商城品項", max: 1, type: "mall" }
+                    { name: "倫提斯系列", max: 2, type: "mall" },
+                    { name: "史奈普系列", max: 2, type: "mall" },
+                    { name: "光之皮夾克系列", max: 1, type: "mall" },
+                    { name: "英雄光之皮夾克系列", max: 1, type: "mall" },
+                    { name: "肩甲系列", max: 1, type: "mall" },
+                    { name: "英雄肩甲系列", max: 1, type: "mall" },
+                    { name: "催化石", max: 1, type: "mall", itemNote: "精煉能力不會跟著轉移" }
                 ]
             },
             {
@@ -374,7 +374,7 @@
                                 <p>選擇預計轉移的裝備、飾品、商城品項與技能數量，系統會即時計算需要的轉職幣與最低鑽石估算。</p>
                                 <p className="text-amber-400 font-medium flex items-center gap-1">
                                     <ArrowRight size={14} />
-                                    裝備類可逐件切換稀有、英雄、傳說、神話；符文固定以稀有成本計算。
+                                    裝備類可逐件切換稀有、英雄、傳說、神話；符石固定以稀有成本計算。
                                 </p>
                             </div>
                         </section>
